@@ -1,0 +1,132 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #1a237e;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+.input-section {
+    margin-bottom: 30px;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    border-color: #1a237e;
+    outline: none;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #283593;
+}
+
+button:disabled {
+    background-color: #9fa8da;
+    cursor: not-allowed;
+}
+
+.results-section {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+.prediction-result {
+    margin-bottom: 25px;
+}
+
+.prediction-result h2 {
+    color: #1a237e;
+    margin-bottom: 15px;
+}
+
+#prediction-text {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+#prediction-text.credible {
+    color: #2e7d32;
+    background-color: #e8f5e9;
+}
+
+#prediction-text.not-credible {
+    color: #c62828;
+    background-color: #ffebee;
+}
+
+#confidence-score {
+    color: #616161;
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.processed-text {
+    background-color: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.processed-text h2 {
+    color: #1a237e;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+}

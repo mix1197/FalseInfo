@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Information Checker</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: 2px solid var(--primary-color);
+            border-color: transparent;
+        }
+
+        #wordCount {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        button:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .results {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .prediction {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .credible {
+            color: var(--success-color);
+        }
+
+        .not-credible {
+            color: var(--danger-color);
+        }
+
+        .model-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .model-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .model-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+        }
+
+        .accuracy {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .chart-container {
+            margin-top: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>False Information Checker</h1>
+            
+            <textarea 
+                id="newsText" 
+                placeholder="Paste your news article here (minimum 15 words for accurate analysis)..."
+            ></textarea>
+            <div id="wordCount" style="margin-bottom: 1rem; color: #666;">Word count: 0 (15 more words needed)</div>
+            
+            <button onclick="analyzeText()" id="analyzeBtn" disabled>Analyze Text</button>
+
+            <div class="results" id="results">
+                <div class="prediction">
+                    Result: <span id="prediction"></span>
+                </div>
+                <div>Confidence: <span id="confidence"></span></div>
+                <div id="confidenceChart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Model Performance</h2>
+            <div class="model-info">
+                <div class="model-card">
+                    <h3>SVM</h3>
+                    <div class="accuracy">96.8%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="model-card">
+                    <h3>Random Forest</h3>
+                    <div class="accuracy">94.5%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="model-card">
+                    <h3>Logistic Regression</h3>
+                    <div class="accuracy">92.3%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="model-card">
+                    <h3>Naive Bayes</h3>
+                    <div class="accuracy">89.7%</div>
+                    <div>Accuracy</div>
+                </div>
+            </div>
+            <div id="modelComparison" class="chart-container"></div>
+        </div>
+    </div>
+
+    <footer>
+        Developed using Machine Learning and Natural Language Processing
+    </footer>
+
+    <script>
+        function countWords(text) {
+            return text.trim().split(/\s+/).length;
+        }
+
+        function analyzeText() {
+            const text = document.getElementById('newsText').value;
+            const button = document.getElementById('analyzeBtn');
+            const results = document.getElementById('results');
+            const wordCount = countWords(text);
+
+            if (!text.trim()) {
+                alert('Please enter some text to analyze');
+                return;
+            }
+
+            if (wordCount < 15) {
+                alert('Please enter at least 15 words for accurate analysis. Current word count: ' + wordCount);
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = 'Analyzing...';
+
+            fetch('/false-information-checker/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('prediction').textContent = data.prediction_label;
+                    document.getElementById('prediction').className = 
+                        data.prediction ? 'not-credible' : 'credible';
+                    document.getElementById('confidence').textContent = 
+                        (data.confidence * 100).toFixed(2) + '%';
+                    
+                    results.style.display = 'block';
+                } else {
+                    alert('Error: ' + (data.message || 'Unknown error occurred'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error analyzing text. Please try again.');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Analyze Text';
+            });
+        }
+
+        document.getElementById('newsText').addEventListener('input', function() {
+            const wordCount = countWords(this.value);
+            const remainingWords = Math.max(15 - wordCount, 0);
+            
+            document.getElementById('wordCount').textContent = 
+                `Word count: ${wordCount}` + (remainingWords > 0 ? ` (${remainingWords} more words needed)` : '');
+            
+            document.getElementById('analyzeBtn').disabled = wordCount < 15;
+        });
+    </script>
+</body>
+</html>
