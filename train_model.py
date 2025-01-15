@@ -9,8 +9,13 @@ import os
 if not os.path.exists('models'):
     os.makedirs('models')
 
+# Get the dataset path from environment variables
+dataset_path = os.getenv("DATASET_PATH", "Philippine Fake News Corpus.csv")
+
 # Load your dataset
-df = pd.read_csv(r'C:\Users\Dominic\OneDrive\Desktop\Manuscript\Philippine Fake News Corpus.csv')
+print("Loading dataset...")
+df = pd.read_csv(dataset_path)
+print(f"Original dataset size: {len(df)} rows")
 
 print("Dataset loaded successfully!")
 print(f"Total rows in dataset: {len(df)}")
