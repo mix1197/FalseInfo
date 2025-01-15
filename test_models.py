@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC  # Using LinearSVC instead of SVC
@@ -12,8 +13,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load your dataset
+# Get the dataset path from environment variables
+dataset_path = os.getenv("DATASET_PATH", "Philippine Fake News Corpus.csv")
+
+# Load your dataset
 print("Loading dataset...")
-df = pd.read_csv(r'C:\Users\Dominic\OneDrive\Desktop\Manuscript\Philippine Fake News Corpus.csv')
+df = pd.read_csv(dataset_path)
 print(f"Original dataset size: {len(df)} rows")
 
 # Take a smaller sample for testing
